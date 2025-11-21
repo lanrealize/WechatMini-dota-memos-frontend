@@ -1,0 +1,17 @@
+{
+  "name": "dota-memos",
+  "version": "1.0.0",
+  "description": "回忆卡片 - Dota情怀应用",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["dota", "memories", "miniprogram"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "mobx-miniprogram": "^5.0.2",
+    "mobx-miniprogram-bindings": "^2.1.5"
+  }
+}
+

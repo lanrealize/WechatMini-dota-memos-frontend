@@ -1,0 +1,67 @@
+<!--pages/story/story.wxml-->
+<view class="story-container">
+  
+  <!-- 🎬 开场动画容器 -->
+  <view 
+    class="opening-animation-container {{openingAnimationClass}}"
+    wx:if="{{showOpeningAnimation}}">
+    
+    <!-- 全屏图片 -->
+    <image 
+      class="opening-animation-image"
+      src="{{openingAnimationImageUrl}}" 
+      mode="aspectFill"
+      bindload="onImageLoad"
+      binderror="onImageError">
+    </image>
+    
+    <!-- 渐变遮罩层 -->
+    <view class="opening-gradient-overlay {{openingGradientClass}}"></view>
+  </view>
+
+  <!-- 背景图片（替代Swiper） -->
+  <view class="story-background">
+    <image 
+      src="{{currentSceneImageUrl}}" 
+      mode="aspectFill" 
+      class="story-image {{imageTransitioning ? 'transitioning' : ''}}"
+      bindload="onImageLoad"
+      binderror="onImageError">
+    </image>
+  </view>
+
+  <!-- ✅ 电影遮罩 - 独立在顶层 -->
+  <view class="cinema-mask cinema-mask-top {{showCinemaMask ? 'show' : ''}}">
+    <view class="cinema-blur"></view>
+    <view class="cinema-gradient cinema-gradient-top"></view>
+  </view>
+  <view class="cinema-mask cinema-mask-bottom {{showCinemaMask ? 'show' : ''}}">
+    <view class="cinema-blur"></view>
+    <view class="cinema-gradient cinema-gradient-bottom"></view>
+  </view>
+
+  <!-- ✅ 文案区域 - 完全独立，放在最顶层 -->
+  <view class="story-content">
+    
+    <!-- 标题（仅第一张图显示） -->
+    <view 
+      class="story-title {{currentTitle.show ? 'show' : ''}}"
+      wx:if="{{currentTitle.text}}"
+      style="top: {{titleTopPosition}}px;">
+      {{currentTitle.text}}
+    </view>
+
+    <!-- 正文 - 逐句显示 -->
+    <view class="story-text-area">
+      <block wx:for="{{currentSentences}}" wx:key="id">
+        <view class="sentence-container">
+          <block wx:for="{{item.segments}}" wx:for-item="seg" wx:for-index="segIndex" wx:key="segIndex">
+            <text class="text-segment type-{{seg.type}} color-{{seg.color}} {{seg.show ? 'show' : ''}}">{{seg.text}}</text>
+          </block>
+        </view>
+      </block>
+    </view>
+
+  </view>
+
+</view>

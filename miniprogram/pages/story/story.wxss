@@ -1,0 +1,312 @@
+/* pages/story/story.wxss */
+
+/* ==================== 容器与布局 ==================== */
+page {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+.story-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+/* 开场动画容器 */
+.opening-animation-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+/* 开场动画图片 - 初始状态 ✅ 与原项目一致 */
+.opening-animation-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  filter: blur(90px) brightness(0.4);  /* ✅ 与原项目一致（0.4而不是0.3）*/
+  transform: scale(1.3);               /* ✅ 与原项目一致（1.3而不是1.4）*/
+}
+
+/* 图片激活状态 - 从模糊到清晰 ✅ 与原项目一致 */
+.opening-animation-container.active .opening-animation-image {
+  animation: openingImageFadeIn 2.5s ease-out forwards;  /* ✅ 2.5s ease-out */
+}
+
+/* 渐变遮罩层 - 幕布效果 */
+.opening-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 400%;
+  height: 100%;
+  background: linear-gradient(225deg, #000 25%, transparent 100%);
+  transform: translateX(-65%);
+  opacity: 1;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* 渐变遮罩激活状态 - 幕布拉开 ✅ 与原项目一致 */
+.opening-gradient-overlay.active {
+  animation: gradientSlide 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards 1.2s;  /* ✅ 2.5s, 延迟1.2s, Material Design缓动 */
+}
+
+/* ==================== 背景容器（替代Swiper） ==================== */
+.story-background {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background-color: #000000;
+}
+
+/* ==================== 图片样式 ==================== */
+.story-image {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.story-image.transitioning {
+  opacity: 0.3;
+}
+
+/* 电影遮罩 */
+.cinema-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  z-index: 90;
+  pointer-events: none;
+}
+
+/* 上遮罩 - 15%高度 */
+.cinema-mask-top {
+  top: 0;
+  height: 15vh;
+}
+
+/* 下遮罩 - 15%高度 */
+.cinema-mask-bottom {
+  bottom: 0;
+  height: 15vh;
+}
+
+/* 毛玻璃效果层 - 基础样式 */
+.cinema-blur {
+  backdrop-filter: blur(8px);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  float: left;
+  opacity: 0;
+  transition: opacity 1.2s linear;
+}
+
+.cinema-mask.show .cinema-blur {
+  opacity: 1;
+}
+
+/* 上遮罩的模糊层 - 从上往下，先完全模糊然后渐隐 */
+.cinema-mask-top .cinema-blur {
+  -webkit-mask-image: linear-gradient(#000, #000, transparent);
+}
+
+/* 下遮罩的模糊层 - 从下往上，先透明然后渐显 */
+.cinema-mask-bottom .cinema-blur {
+  -webkit-mask-image: linear-gradient(transparent, #000, #000);
+}
+
+/* 渐变层 */
+.cinema-gradient {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  float: left;
+  opacity: 0;
+  transition: opacity 1.2s linear;
+}
+
+.cinema-mask.show .cinema-gradient {
+  opacity: 1;
+}
+
+/* 上遮罩的渐变 - 从上往下渐变（180deg） */
+.cinema-gradient-top {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* 下遮罩的渐变 - 从下往上渐变（0deg） */
+.cinema-gradient-bottom {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* 文案区域 */
+.story-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* 标题（保持原有效果） */
+.story-title {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  padding: 0 8vw;
+  box-sizing: border-box;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 2rpx;
+  line-height: 1.5;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transform: translateY(-50%) translateY(-8px);
+  transition: opacity 1.2s linear,
+              transform 1.2s ease-out;
+}
+
+.story-title.show {
+  opacity: 1;
+  transform: translateY(-50%) translateY(0);
+}
+
+/* ==================== 文字类型系统 ==================== */
+
+/* 正文区域容器 */
+.story-text-area {
+  position: absolute;
+  bottom: 8vh;
+  left: 0;
+  width: 100%;
+  padding: 0 8vw;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+/* 句子容器 */
+.sentence-container {
+  display: block;
+  line-height: 1.8;
+}
+
+/* 文字片段基础样式 */
+.text-segment {
+  display: inline;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.text-segment.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== 文字类型 ===== */
+
+/* 正文 - 主要 */
+.type-body-primary {
+  font-size: 32rpx;
+  font-weight: 400;
+  letter-spacing: 1rpx;
+}
+
+/* 正文 - 次要 */
+.type-body-secondary {
+  font-size: 28rpx;
+  font-weight: 400;
+  letter-spacing: 1rpx;
+}
+
+/* 强调 - 数字（大号 + 极细字重） */
+.type-emphasis-number {
+  font-size: 56rpx;
+  font-weight: 200;
+  letter-spacing: 2rpx;
+  line-height: 1.2;
+}
+
+/* 强调 - 关键词（中号 + 极细字重） */
+.type-emphasis-keyword {
+  font-size: 36rpx;
+  font-weight: 200;
+  letter-spacing: 2rpx;
+}
+
+/* ===== 颜色系统 ===== */
+
+/* 纯白 - 用于数字强调 */
+.color-white-pure {
+  color: rgba(255, 255, 255, 1.0);
+}
+
+/* 主白 - 用于重要正文 */
+.color-white-primary {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* 次白 - 用于次要正文 */
+.color-white-secondary {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* 三级白 - 用于注释 */
+.color-white-tertiary {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ==================== 动画关键帧 ==================== */
+
+/* 开场图片淡入动画 ✅ 与原项目一致 */
+@keyframes openingImageFadeIn {
+  from {
+    opacity: 0;
+    filter: blur(90px) brightness(0.4);  /* ✅ 0.4 */
+    transform: scale(1.3);               /* ✅ 1.3 */
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px) brightness(1);
+    transform: scale(1);
+  }
+}
+
+/* 渐变遮罩滑动动画 */
+@keyframes gradientSlide {
+  0% {
+    transform: translateX(-65%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
