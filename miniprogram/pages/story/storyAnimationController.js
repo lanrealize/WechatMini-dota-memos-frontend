@@ -47,14 +47,11 @@ class StoryAnimationController {
     // 播放开场动画
     this.playOpeningAnimation();
     
-    // 开场动画结束后，显示电影遮罩并开始第一个场景
+    // 开场动画结束后，电影遮罩和第一个场景同时开始
     this.addTimer(() => {
+      // 同时触发：电影遮罩淡入 + 第一个场景（标题出现）
       this.page.setData({ showCinemaMask: true });
-      
-      // 电影遮罩动画完成后，开始第一个场景
-      this.addTimer(() => {
-        this.playScene(0);
-      }, 1200 + 1000);  // 电影遮罩1.2s动画 + 1s间隔
+      this.playScene(0);
     }, ANIMATION_CONFIG.CINEMA_MASK_SHOW_TIME);
   }
 
@@ -176,88 +173,55 @@ class StoryAnimationController {
     }
 
     const nextScene = this.storyScenes[nextSceneIndex];
-    let transitionTimer = 0;
 
-    // ===== 1. 文字淡出（500ms）=====
+    // ===== 1. 文字和当前图片一起淡出（1200ms）=====
     const currentSentences = this.page.data.currentSentences;
     const hiddenSentences = currentSentences.map(sentence => ({
       ...sentence,
       segments: sentence.segments.map(seg => ({ ...seg, show: false }))
     }));
     
+    // 当前图片淡出
+    const currentImageFadeOut = wx.createAnimation({ 
+      duration: 1200, 
+      timingFunction: 'ease-in-out' 
+    });
+    currentImageFadeOut.opacity(0).step();
+    
     this.page.setData({
       currentSentences: hiddenSentences,
-      'currentTitle.show': false
+      'currentTitle.show': false,
+      newImageAnimation: currentImageFadeOut.export()
     });
-    
-    transitionTimer += 500;  // 文字淡出动画时长
 
-    // ===== 2. 等待1秒（文字消失完成后的停留）=====
-    transitionTimer += 1000;
-
-    // ===== 3. 图片交叉溶解 =====
+    // ===== 2. 淡出完成后，准备新图片 =====
     this.addTimer(() => {
-      const currentImg = this.page.data.currentSceneImageUrl;
-      
-      const oldImageAnim = wx.createAnimation({ duration: 0 });
-      oldImageAnim.opacity(0).step();
+      const newImageAnim = wx.createAnimation({ duration: 0 });
+      newImageAnim.opacity(0).step();
       
       this.page.setData({
-        oldSceneImageUrl: currentImg,
-        oldImageAnimation: oldImageAnim.export()
+        currentSceneImageUrl: nextScene.imageUrl,
+        newImageAnimation: newImageAnim.export()
       });
 
+      // ===== 3. 新图片淡入（1000ms）=====
       this.addTimer(() => {
-        const oldFadeIn = wx.createAnimation({ 
-          duration: 300, 
+        const newFadeIn = wx.createAnimation({ 
+          duration: 1000, 
           timingFunction: 'ease-in-out' 
         });
-        oldFadeIn.opacity(1).step();
+        newFadeIn.opacity(1).step();
         
         this.page.setData({
-          oldImageAnimation: oldFadeIn.export()
+          newImageAnimation: newFadeIn.export()
         });
 
+        // ===== 4. 淡入完成后，播放新场景 =====
         this.addTimer(() => {
-          const newImageAnim = wx.createAnimation({ duration: 0 });
-          newImageAnim.opacity(0).step();
-          
-          this.page.setData({
-            currentSceneImageUrl: nextScene.imageUrl,
-            newImageAnimation: newImageAnim.export()
-          });
-
-          this.addTimer(() => {
-            const oldFadeOut = wx.createAnimation({ 
-              duration: 1000, 
-              timingFunction: 'ease-in-out' 
-            });
-            oldFadeOut.opacity(0).step();
-            
-            const newFadeIn = wx.createAnimation({ 
-              duration: 1000, 
-              timingFunction: 'ease-in-out' 
-            });
-            newFadeIn.opacity(1).step();
-            
-            this.page.setData({
-              oldImageAnimation: oldFadeOut.export(),
-              newImageAnimation: newFadeIn.export()
-            });
-          }, 200);
-        }, 350);
+          this.playScene(nextSceneIndex);
+        }, 1000 + 200);  // 1000ms淡入 + 200ms短暂停留
       }, 200);
-    }, transitionTimer);
-
-    transitionTimer += 1750;  // 200 + 350 + 200 + 1000(溶解动画时长)
-
-    // ===== 4. 短暂停留（200ms）=====
-    transitionTimer += 200;
-
-    // ===== 5. 播放新场景 =====
-    this.addTimer(() => {
-      this.playScene(nextSceneIndex);
-    }, transitionTimer);
+    }, 1200);  // 等待淡出完成
   }
 
   /**

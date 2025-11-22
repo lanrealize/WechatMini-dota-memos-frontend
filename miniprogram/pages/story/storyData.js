@@ -9,7 +9,7 @@ const STORY_SCENES = [
   // ===== 第1张图：开篇 =====
   {
     id: 'scene_1',
-    imageUrl: '/assets/images/void_01.png',
+    imageUrl: '/assets/images/void_01.jpg',
     totalDuration: 7000,  // 这张图总停留7秒
     
     // 标题（特殊处理）
@@ -45,7 +45,7 @@ const STORY_SCENES = [
   // ===== 第2张图：现实对比 =====
   {
     id: 'scene_2',
-    imageUrl: '/assets/images/void_02.png',
+    imageUrl: '/assets/images/void_02.jpg',
     totalDuration: 6000,
     
     sentences: [
@@ -80,7 +80,7 @@ const STORY_SCENES = [
   // ===== 第3张图：Dota世界的震撼 =====
   {
     id: 'scene_3',
-    imageUrl: '/assets/images/void_03.png',
+    imageUrl: '/assets/images/void_03.jpg',
     totalDuration: 13000,
     
     sentences: [
