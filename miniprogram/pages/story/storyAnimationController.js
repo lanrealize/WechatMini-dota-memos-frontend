@@ -59,19 +59,25 @@ class StoryAnimationController {
   }
 
   /**
-   * 播放开场动画（保持原有实现）
+   * 播放开场动画
    */
   playOpeningAnimation() {
     const firstSceneImage = this.storyScenes[0].imageUrl;
     
-    // 显示开场动画容器
+    const newImageAnim = wx.createAnimation({ duration: 0 });
+    newImageAnim.opacity(1).step();
+    
+    const oldImageAnim = wx.createAnimation({ duration: 0 });
+    oldImageAnim.opacity(0).step();
+    
     this.page.setData({
       showOpeningAnimation: true,
       openingAnimationImageUrl: firstSceneImage,
-      currentSceneImageUrl: firstSceneImage  // 同时设置背景图
+      currentSceneImageUrl: firstSceneImage,
+      newImageAnimation: newImageAnim.export(),
+      oldImageAnimation: oldImageAnim.export()
     });
 
-    // T=500ms: 激活开场动画
     this.addTimer(() => {
       this.page.setData({
         openingAnimationClass: 'active',
@@ -79,7 +85,6 @@ class StoryAnimationController {
       });
     }, ANIMATION_CONFIG.OPENING_DELAY);
 
-    // T=4200ms: 移除开场遮罩
     this.addTimer(() => {
       this.page.setData({
         showOpeningAnimation: false
@@ -111,9 +116,8 @@ class StoryAnimationController {
       }))
     }));
 
-    // 设置场景图片和句子
+    // 设置句子数据（图片已在transitionToNextScene中设置好）
     this.page.setData({
-      currentSceneImageUrl: scene.imageUrl,
       currentSentences: sentencesData,
       // 仅第一张图显示标题
       currentTitle: scene.title ? {
@@ -162,7 +166,7 @@ class StoryAnimationController {
   }
 
   /**
-   * 切换到下一个场景
+   * 切换到下一个场景（带交叉溶解效果）
    * @param {number} nextSceneIndex - 下一个场景索引
    */
   transitionToNextScene(nextSceneIndex) {
@@ -171,23 +175,95 @@ class StoryAnimationController {
       return;
     }
 
-    // 清空当前文字（场景切换时重置）
-    this.page.setData({
-      currentSentences: [],
-      currentTitle: { text: '', show: false }
-    });
+    const nextScene = this.storyScenes[nextSceneIndex];
+    let transitionTimer = 0;
 
-    // 短暂延迟后播放下一个场景
+    // ===== 1. 文字淡出（500ms）=====
+    const currentSentences = this.page.data.currentSentences;
+    const hiddenSentences = currentSentences.map(sentence => ({
+      ...sentence,
+      segments: sentence.segments.map(seg => ({ ...seg, show: false }))
+    }));
+    
+    this.page.setData({
+      currentSentences: hiddenSentences,
+      'currentTitle.show': false
+    });
+    
+    transitionTimer += 500;  // 文字淡出动画时长
+
+    // ===== 2. 等待1秒（文字消失完成后的停留）=====
+    transitionTimer += 1000;
+
+    // ===== 3. 图片交叉溶解 =====
+    this.addTimer(() => {
+      const currentImg = this.page.data.currentSceneImageUrl;
+      
+      const oldImageAnim = wx.createAnimation({ duration: 0 });
+      oldImageAnim.opacity(0).step();
+      
+      this.page.setData({
+        oldSceneImageUrl: currentImg,
+        oldImageAnimation: oldImageAnim.export()
+      });
+
+      this.addTimer(() => {
+        const oldFadeIn = wx.createAnimation({ 
+          duration: 300, 
+          timingFunction: 'ease-in-out' 
+        });
+        oldFadeIn.opacity(1).step();
+        
+        this.page.setData({
+          oldImageAnimation: oldFadeIn.export()
+        });
+
+        this.addTimer(() => {
+          const newImageAnim = wx.createAnimation({ duration: 0 });
+          newImageAnim.opacity(0).step();
+          
+          this.page.setData({
+            currentSceneImageUrl: nextScene.imageUrl,
+            newImageAnimation: newImageAnim.export()
+          });
+
+          this.addTimer(() => {
+            const oldFadeOut = wx.createAnimation({ 
+              duration: 1000, 
+              timingFunction: 'ease-in-out' 
+            });
+            oldFadeOut.opacity(0).step();
+            
+            const newFadeIn = wx.createAnimation({ 
+              duration: 1000, 
+              timingFunction: 'ease-in-out' 
+            });
+            newFadeIn.opacity(1).step();
+            
+            this.page.setData({
+              oldImageAnimation: oldFadeOut.export(),
+              newImageAnimation: newFadeIn.export()
+            });
+          }, 200);
+        }, 350);
+      }, 200);
+    }, transitionTimer);
+
+    transitionTimer += 1750;  // 200 + 350 + 200 + 1000(溶解动画时长)
+
+    // ===== 4. 短暂停留（200ms）=====
+    transitionTimer += 200;
+
+    // ===== 5. 播放新场景 =====
     this.addTimer(() => {
       this.playScene(nextSceneIndex);
-    }, 500);
+    }, transitionTimer);
   }
 
   /**
    * 故事结束
    */
   endStory() {
-    console.log('🎬 故事播放完成');
     // TODO: 显示落幕效果和选项（重播、分享、购买）
   }
 

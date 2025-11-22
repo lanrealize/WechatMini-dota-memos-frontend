@@ -17,9 +17,11 @@ Page({
     // 标题垂直位置
     titleTopPosition: 0,
 
-    // 当前场景图片
+    // 场景图片（双层用于交叉溶解）
+    oldSceneImageUrl: '',
+    oldImageAnimation: null,
     currentSceneImageUrl: '',
-    imageTransitioning: false,
+    newImageAnimation: null,
 
     // 当前标题（仅第一张图显示）
     currentTitle: {
@@ -59,7 +61,7 @@ Page({
    * 图片加载失败
    */
   onImageError: function(e) {
-    console.error('❌ 图片加载失败', e.detail);
+    // 图片加载失败处理
   },
 
   /**
