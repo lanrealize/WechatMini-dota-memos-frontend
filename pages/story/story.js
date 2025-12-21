@@ -12,30 +12,10 @@ Page({
         title: "7分钟的炼金术",
         copywriting: "信使被击杀，圣者遗物坠落，仅 7 分钟后 ZSMJ 重新打出 3800，向世人展示了他 7 分钟的炼金术。",
         videoUrl: "https://media.w3.org/2010/05/sintel/trailer.mp4"
-      },
-      {
-        id: 2,
-        title: "百万梦境缠绕",
-        copywriting: "DreamCoil 百万梦境缠绕，全球流极限守高，那一年我们见证了战术的巅峰与团队的奇迹。",
-        videoUrl: "https://media.w3.org/2010/05/bunny/trailer.mp4"
-      },
-      {
-        id: 3,
-        title: "泉水前的剑舞",
-        copywriting: "剑刃风暴在泉水前旋转，无敌斩的光芒划破黑暗，这一刻，他不仅是英雄，更是传奇本身。",
-        videoUrl: "https://media.w3.org/2010/05/video/movie_300.mp4"
-      },
-      {
-        id: 4,
-        title: "Roshan的赌注",
-        copywriting: "全员买活，Roshan团灭，胜利的天平在最后30秒内完成了180度的逆转。",
-        videoUrl: "https://media.w3.org/2010/05/video/movie_300.mp4"
       }
     ],
     // 当前显示的故事
     currentStory: null,
-    // 文案字符数组（用于逐字动画）
-    textChars: [],
     // 视频卡片动画延迟时间（秒）
     videoCardDelay: 0,
     // 是否显示遮罩
@@ -124,68 +104,6 @@ Page({
   },
 
   /**
-   * 呼吸节奏分组：短-长-短交替，创造韵律感
-   * 使用节奏模式：2字 → 4字 → 2字 → 3字 → 循环
-   */
-  splitTextBreathing(text) {
-    const result = []
-    let groupIndex = 0
-    let i = 0
-
-    // 呼吸节奏模式：短-长-短-中
-    const rhythmPattern = [2, 4, 2, 3]
-    let patternIndex = 0
-
-    while (i < text.length) {
-      const char = text[i]
-      let group = ''
-      let charCount = 0
-      let targetLength = rhythmPattern[patternIndex]
-
-      // 如果遇到英文单词或数字，单独成组
-      if (/[a-zA-Z0-9]/.test(char)) {
-        while (i < text.length && /[a-zA-Z0-9]/.test(text[i])) {
-          group += text[i]
-          i++
-        }
-        result.push({ char: group, index: groupIndex++ })
-        patternIndex = (patternIndex + 1) % rhythmPattern.length
-        continue
-      }
-
-      // 收集目标长度的字符
-      while (i < text.length && charCount < targetLength) {
-        const currentChar = text[i]
-
-        // 遇到英文或数字就停止，留给下一轮处理
-        if (/[a-zA-Z0-9]/.test(currentChar)) {
-          break
-        }
-
-        group += currentChar
-        i++
-
-        // 标点符号不计入长度，但会包含在组内
-        if (!/[，。、？！,.?!；;：: ]/.test(currentChar)) {
-          charCount++
-        }
-
-        // 如果遇到句末标点，提前结束本组
-        if (/[，。！？,.!?]/.test(currentChar)) {
-          break
-        }
-      }
-
-      if (group) {
-        result.push({ char: group, index: groupIndex++ })
-        patternIndex = (patternIndex + 1) % rhythmPattern.length
-      }
-    }
-
-    return result
-  },
-
-  /**
    * 随机选择一个故事
    */
   randomStory() {
@@ -199,20 +117,16 @@ Page({
 
     const currentStory = stories[newIndex]
 
-    // 使用呼吸节奏分组
-    const textChars = this.splitTextBreathing(currentStory.copywriting)
-
-    // 动态计算视频卡片动画开始时间
-    // 最后一组的延迟 + 单组动画时长 + 额外缓冲时间
-    const lastGroupDelay = (textChars.length - 1) * 0.15  // 每组延迟 0.15s
-    const singleCharDuration = 1  // 单组动画时长 1s
-    const bufferTime = 0.3  // 额外缓冲 0.3s
-    const videoCardDelay = lastGroupDelay + singleCharDuration + bufferTime
+    // 计算视频卡片动画开始时间
+    // 文字初始延迟 + 文字动画时长 + 额外缓冲时间
+    const initialDelay = 1.5  // 文字初始延迟 1.5s
+    const textDuration = 1.6  // 文字动画时长 1.6s
+    const bufferTime = 1.5  // 文字动画结束后额外缓冲 1.5s
+    const videoCardDelay = initialDelay + textDuration + bufferTime
 
     this.setData({
       currentStory,
-      textChars,
-      videoCardDelay,  // 传递给 WXML 使用
+      videoCardDelay,
       currentIndex: newIndex,
       showOverlay: false
     })

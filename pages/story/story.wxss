@@ -34,8 +34,19 @@ page {
   height: 100%;
   object-fit: cover;
   filter: blur(60rpx) brightness(0.5) contrast(1.1);
-  transform: scale(1.15); /* 增加模糊范围，避免边缘白边 */
-  animation: subtleZoom 20s ease-in-out infinite alternate;
+  transform: scale(1.15);
+  animation: subtleZoom 20s ease-in-out infinite alternate, bgFadeIn 1.2s ease-out both;
+  opacity: 0;
+}
+
+/* 背景图片淡入动画 */
+@keyframes bgFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .bg-overlay {
@@ -73,35 +84,50 @@ page {
   text-align: center;
   position: relative;
   line-height: 1.7;
+  padding: 0 60rpx;
 }
 
-/* 逐字凝聚效果 */
-.copywriting-char {
+/* 强制确保所有子元素最终清晰 */
+.copywriting-content > text {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 整段文字凝聚效果 - 轻微缩放 */
+.copywriting-text {
   display: inline-block;
   font-size: 30rpx;
+  line-height: 1.7;
   color: #ffffff;
   font-style: normal;
   text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.6);
   letter-spacing: 0.008em;
   font-weight: 350;
-  opacity: 0;
-  animation: charCoalesce 1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  padding: 8rpx 0;
+
+  /* 设置最终状态作为基础样式 */
+  opacity: 0.95;
+  transform: scale(1);
+  filter: blur(0);
+  -webkit-filter: blur(0);
+
+  /* 整段文字动画：延迟1.5s开始 */
+  animation: textAppear 1.6s cubic-bezier(0.25, 0.1, 0.25, 1) 1.5s both;
 }
 
-/* 字符凝聚动画：从大+模糊到正常+清晰 */
-@keyframes charCoalesce {
-  0% {
+/* 文字淡入动画 - 轻微放大凝聚 */
+@keyframes textAppear {
+  from {
     opacity: 0;
-    transform: scale(1.8);
+    transform: scale(1.15);
     filter: blur(6rpx);
+    -webkit-filter: blur(6rpx);
   }
-  50% {
-    opacity: 0.8;
-  }
-  100% {
+  to {
     opacity: 0.95;
     transform: scale(1);
     filter: blur(0);
+    -webkit-filter: blur(0);
   }
 }
 
