@@ -92,7 +92,7 @@ page {
 @keyframes charCoalesce {
   0% {
     opacity: 0;
-    transform: scale(3);
+    transform: scale(1.8);
     filter: blur(6rpx);
   }
   50% {
