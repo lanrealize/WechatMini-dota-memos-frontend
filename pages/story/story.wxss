@@ -85,22 +85,22 @@ page {
   letter-spacing: 0.008em;
   font-weight: 350;
   opacity: 0;
-  animation: charCoalesce 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation: charCoalesce 1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
 /* 字符凝聚动画：从大+模糊到正常+清晰 */
 @keyframes charCoalesce {
   0% {
     opacity: 0;
-    transform: scale(1.8) translateY(10rpx);
-    filter: blur(8rpx);
+    transform: scale(3);
+    filter: blur(6rpx);
   }
-  60% {
-    opacity: 0.95;
+  50% {
+    opacity: 0.8;
   }
   100% {
     opacity: 0.95;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
     filter: blur(0);
   }
 }
@@ -128,7 +128,29 @@ page {
     0 -10rpx 60rpx rgba(0, 0, 0, 0.35),
     inset 0 1rpx 0 rgba(255, 255, 255, 0.1),
     inset 0 0 0 1rpx rgba(212, 175, 55, 0.12);
-  animation: cardFloat 6s ease-in-out infinite alternate;
+
+  /* 初始状态：完全隐藏在下方 */
+  opacity: 0;
+  transform: translateY(120rpx);
+
+  /* 延迟滑入动画：等待文字动画完成后再出现 */
+  /* 注意：animation-delay 通过 style 动态设置 */
+  animation: cardSlideIn 1.8s cubic-bezier(0.16, 0.8, 0.36, 1) both;
+}
+
+/* 视频卡片滑入动画 */
+@keyframes cardSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(120rpx);
+  }
+  60% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes cardFloat {

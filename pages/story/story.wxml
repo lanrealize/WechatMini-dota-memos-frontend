@@ -13,14 +13,14 @@
         wx:for="{{textChars}}"
         wx:key="index"
         class="copywriting-char"
-        style="animation-delay: {{item.index * 0.03}}s;">{{item.char}}</text>
+        style="animation-delay: {{item.index * 0.15}}s;">{{item.char}}</text>
     </view>
   </view>
 
   <!-- 视频卡片区（从底部伸出） -->
   <view class="video-section">
     <!-- 视频卡片 -->
-    <view class="video-card">
+    <view class="video-card" style="animation-delay: {{videoCardDelay}}s;">
       <!-- 暂时用纯黑背景占位，隐藏视频 -->
       <view class="video-placeholder"></view>
 
