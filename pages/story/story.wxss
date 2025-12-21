@@ -74,32 +74,6 @@ page {
   position: relative;
 }
 
-.copywriting-content::before {
-  content: '';
-  position: absolute;
-  top: -14rpx; /* 更接近文字 */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100rpx; /* 稍短 */
-  height: 3rpx; /* 更细 */
-  background: linear-gradient(90deg, transparent, #d4af37, transparent);
-  border-radius: 2rpx;
-  opacity: 0.4; /* 更透明 */
-}
-
-.copywriting-content::after {
-  content: '';
-  position: absolute;
-  bottom: -14rpx; /* 更接近文字 */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100rpx; /* 稍短 */
-  height: 3rpx; /* 更细 */
-  background: linear-gradient(90deg, transparent, #d4af37, transparent);
-  border-radius: 2rpx;
-  opacity: 0.4; /* 更透明 */
-}
-
 .copywriting-text {
   font-size: 30rpx;
   line-height: 1.7;
