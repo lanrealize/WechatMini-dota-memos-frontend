@@ -1,0 +1,17 @@
+<!--pages/shop/shop.wxml-->
+<view class="container">
+  <text>{{title}}</text>
+  <view class="product-list">
+    <view wx:for="{{products}}" wx:key="id" class="product-item" data-id="{{item.id}}" bindtap="buyProduct">
+      <view class="product-image">
+        <text>图片</text>
+      </view>
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-price">￥{{item.price}}</text>
+      </view>
+      <view class="buy-button">购买</view>
+    </view>
+  </view>
+  <button bindtap="goToStory">返回故事</button>
+</view>

@@ -1,0 +1,46 @@
+<!--pages/story/story.wxml-->
+<view class="gallery-container">
+  <!-- 毛玻璃模糊背景 -->
+  <view class="blur-background">
+    <image class="bg-image" src="https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" mode="aspectFill"></image>
+    <view class="bg-overlay"></view>
+  </view>
+
+  <!-- 文案展示区（居中） -->
+  <view class="copywriting-section">
+    <view class="copywriting-content">
+      <text class="copywriting-text">{{currentStory.copywriting}}</text>
+    </view>
+  </view>
+
+  <!-- 视频卡片区（从底部伸出） -->
+  <view class="video-section">
+    <!-- 视频卡片 -->
+    <view class="video-card">
+      <!-- 视频播放器（无控件） -->
+      <video
+        id="storyVideo"
+        src="{{currentStory.videoUrl}}"
+        autoplay="{{true}}"
+        controls="{{false}}"
+        show-center-play-btn="{{false}}"
+        show-play-btn="{{false}}"
+        show-fullscreen-btn="{{false}}"
+        enable-play-gesture="{{false}}"
+        object-fit="cover"
+        bindended="onVideoEnd"
+        bindplay="onVideoPlay"
+        class="video-player">
+      </video>
+
+      <!-- 遮罩层（视频结束后显示） -->
+      <view class="video-overlay" wx:if="{{showOverlay}}">
+        <!-- 操作按钮 -->
+        <view class="action-buttons">
+          <button class="action-btn replay-btn" bindtap="replayVideo">重播</button>
+          <button class="action-btn collect-btn" bindtap="goToCollect">典藏</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
