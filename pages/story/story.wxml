@@ -17,8 +17,11 @@
   <view class="video-section">
     <!-- 视频卡片 -->
     <view class="video-card">
-      <!-- 视频播放器（无控件） -->
-      <video
+      <!-- 暂时用纯黑背景占位，隐藏视频 -->
+      <view class="video-placeholder"></view>
+
+      <!-- 视频播放器（暂时注释） -->
+      <!-- <video
         id="storyVideo"
         src="{{currentStory.videoUrl}}"
         autoplay="{{true}}"
@@ -31,16 +34,16 @@
         bindended="onVideoEnd"
         bindplay="onVideoPlay"
         class="video-player">
-      </video>
+      </video> -->
 
-      <!-- 遮罩层（视频结束后显示） -->
+      <!-- 遮罩层（暂时注释）
       <view class="video-overlay" wx:if="{{showOverlay}}">
-        <!-- 操作按钮 -->
         <view class="action-buttons">
           <button class="action-btn replay-btn" bindtap="replayVideo">重播</button>
           <button class="action-btn collect-btn" bindtap="goToCollect">典藏</button>
         </view>
       </view>
+      -->
     </view>
   </view>
 </view>
