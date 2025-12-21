@@ -9,7 +9,11 @@
   <!-- 文案展示区（居中） -->
   <view class="copywriting-section">
     <view class="copywriting-content">
-      <text class="copywriting-text">{{currentStory.copywriting}}</text>
+      <text
+        wx:for="{{textChars}}"
+        wx:key="index"
+        class="copywriting-char"
+        style="animation-delay: {{item.index * 0.03}}s;">{{item.char}}</text>
     </view>
   </view>
 

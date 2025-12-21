@@ -72,46 +72,35 @@ page {
   max-width: 680rpx;
   text-align: center;
   position: relative;
+  line-height: 1.7;
 }
 
-.copywriting-text {
+/* 逐字凝聚效果 */
+.copywriting-char {
+  display: inline-block;
   font-size: 30rpx;
-  line-height: 1.7;
   color: #ffffff;
   font-style: normal;
   text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.6);
   letter-spacing: 0.008em;
-  font-weight: 350; /* 稍细 */
-  padding: 8rpx 0;
+  font-weight: 350;
   opacity: 0;
-  animation:
-    textReveal 2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards,
-    textFloat 2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation: charCoalesce 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
-/* 逐字显现效果 */
-@keyframes textReveal {
+/* 字符凝聚动画：从大+模糊到正常+清晰 */
+@keyframes charCoalesce {
   0% {
     opacity: 0;
-    clip-path: inset(0 100% 0 0);
+    transform: scale(1.8) translateY(10rpx);
+    filter: blur(8rpx);
   }
-  50% {
+  60% {
     opacity: 0.95;
   }
   100% {
     opacity: 0.95;
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-/* 配合轻微上浮效果 */
-@keyframes textFloat {
-  from {
-    transform: translateY(15rpx);
-    filter: blur(2rpx);
-  }
-  to {
-    transform: translateY(0);
+    transform: scale(1) translateY(0);
     filter: blur(0);
   }
 }

@@ -34,6 +34,8 @@ Page({
     ],
     // 当前显示的故事
     currentStory: null,
+    // 文案字符数组（用于逐字动画）
+    textChars: [],
     // 是否显示遮罩
     showOverlay: false,
     // 当前故事索引（用于随机切换）
@@ -133,8 +135,15 @@ Page({
 
     const currentStory = stories[newIndex]
 
+    // 将文案拆分成字符数组，用于逐字动画
+    const textChars = currentStory.copywriting.split('').map((char, index) => ({
+      char: char,
+      index: index
+    }))
+
     this.setData({
       currentStory,
+      textChars,
       currentIndex: newIndex,
       showOverlay: false
     })
